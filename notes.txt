@@ -1,0 +1,41 @@
+User authentication and authorization
+User can sign up, login 
+Product management (CRUD operations)
+Users can view products, create a purchase, edit a purchase and delete a purchase
+Admin can create a product, edit a product and delete a product
+Responsive design
+Modern UI components
+API integration
+
+
+Database Schema 
+
+Users Table 
+id
+username
+email
+password
+created_at
+updated_at
+
+Products Table
+product_id
+name
+description
+price
+image
+discount
+quantity
+created_at
+updated_at
+
+Purchase Table
+id
+product_id
+user_id
+paid: boolean
+description
+quantity
+total_amount
+created_at
+updated_at
