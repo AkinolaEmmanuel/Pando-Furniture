@@ -12,6 +12,18 @@ export const createProduct = async (req, res) => {
     }
 }
 
+// Create multiple products 
+
+export const createMultipleProducts = async (req, res) => {
+    try {
+        const productsData = req.body; 
+        const products = await Product.insertMany(productsData);
+        res.status(201).json({ message: 'Products created successfully', status: 201, data: products });
+    } catch (error) {
+        res.status(500).json({ message: 'Error creating products', error });
+    }
+}
+
 // Get all Products
 
 export const getAllProducts = async (req, res) => {

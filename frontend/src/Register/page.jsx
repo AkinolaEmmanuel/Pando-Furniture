@@ -29,7 +29,7 @@ const RegisterAuth = () => {
 
   return (
     <>
-        <div className="flex flex-col md:flex-row items-center justify-center overflow-hidden w-full h-screen 2xl:h-full">
+        <div className="flex flex-col md:flex-row items-center justify-center overflow-hidden dark:text-white w-full h-screen 2xl:h-full">
             <div className="w-full md:w-1/2 p-5">
                 <div className="flex items-center justify-center w-full h-full">
                     <motion.form

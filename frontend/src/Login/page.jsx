@@ -30,7 +30,7 @@ const LoginAuth = () => {
 
   return (
     <>
-        <div className="flex flex-col md:flex-row items-center justify-center overflow-hidden w-full h-screen 2xl:h-full">
+        <div className="flex flex-col md:flex-row items-center justify-center overflow-hidden dark:text-white w-full h-screen 2xl:h-full">
             <div className="w-full md:w-1/2 p-5">
                 <div className="flex items-center justify-center w-full h-full">
                     <motion.form
@@ -40,7 +40,7 @@ const LoginAuth = () => {
                         className="flex flex-col items-center justify-center lg:gap-5 w-full h-full max-w-lg"
                         onSubmit={handleSubmit}
                     >
-                                <h1 className="text-4xl font-bold my-5">Login to <span className='text-amber-500'>Pando Furniture<span className='text-amber-800 animate-ping'>.</span></span></h1>
+                                <h1 className="text-4xl font-bold dark:text-white my-5">Login to <span className='text-amber-500'>Pando Furniture<span className='text-amber-800 animate-ping'>.</span></span></h1>
                                 <div className="max-w-sm">
                                 <input
                                     type="email"

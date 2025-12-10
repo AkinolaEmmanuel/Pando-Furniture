@@ -23,16 +23,19 @@ export const useApi = (endpoint, method, body, options) => {
             if (response.status === 200 || response.status === 201) {
                 setSuccess(true);
                 setData(response.data);
+                return response.data;
             }
             else {
                 setSuccess(false);
                 setData(null);
                 toast.error(response.message);
+                return null;
             }
             
         } catch (error) {
             setError(error);
             toast.error(error.message);
+            return null;
         } finally {
             setLoading(false);
         }
