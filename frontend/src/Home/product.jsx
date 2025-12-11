@@ -9,115 +9,32 @@ const ProductsSection = () => {
     
     const categories = [
         { id: 'all', name: 'All Products', endpoint: 'products' },
-        { id: 'chairs', name: 'Chairs', endpoint: 'products/category/chairs' },
-        { id: 'tables', name: 'Tables', endpoint: 'products/category/tables' },
-        { id: 'sofas', name: 'Sofas', endpoint: 'products/category/sofas' }
+        { id: 'chairs', name: 'Chairs', endpoint: 'products/category/Chairs' },
+        { id: 'tables', name: 'Tables', endpoint: 'products/category/Tables' },
+        { id: 'sofas', name: 'Sofas', endpoint: 'products/category/Sofas' },
+        { id: 'kitchen', name: 'Kitchen', endpoint: 'products/category/Kitchen' },
+        { id: 'beds', name: 'Beds', endpoint: 'products/category/Beds' },
+        { id: 'storage', name: 'Storage', endpoint: 'products/category/Storage' },
+        { id: 'office', name: 'Office', endpoint: 'products/category/Office' },
+        { id: 'discounts', name: 'Discounts', endpoint: 'products/discount/true' },
     ];
+    const selectedCategory = categories.find(cat => cat.id === activeCategory);
+    const { callApi, loading } = useApi(selectedCategory.endpoint, 'GET');
 
-    const { callApi, loading, data } = useApi('products', 'GET');
-
-  
-      const mockProducts = {
-        all: [
-            {
-                id: 1,
-                name: "Modern Ergonomic Office Chair",
-                description: "Comfortable office chair with lumbar support and adjustable height",
-                price: 299.99,
-                discount: 15,
-                category: "Chairs",
-                image_url: "/api/placeholder/300/300",
-                rating: 4.5
-            },
-            {
-                id: 2,
-                name: "Minimalist Dining Table",
-                description: "Clean lines dining table perfect for modern homes",
-                price: 699.99,
-                discount: 0,
-                category: "Tables",
-                image_url: "/api/placeholder/300/300",
-                rating: 4.8
-            },
-            {
-                id: 3,
-                name: "Luxury Sectional Sofa",
-                description: "Spacious sectional sofa with premium fabric upholstery",
-                price: 1299.99,
-                discount: 20,
-                category: "Sofas",
-                image_url: "/api/placeholder/300/300",
-                rating: 4.7
-            },
-            {
-                id: 4,
-                name: "Scandinavian Accent Chair",
-                description: "Beautiful accent chair with wooden legs and soft cushioning",
-                price: 199.99,
-                discount: 10,
-                category: "Chairs",
-                image_url: "/api/placeholder/300/300",
-                rating: 4.3
-            },
-            {
-                id: 5,
-                name: "Glass Coffee Table",
-                description: "Modern glass coffee table with metal frame",
-                price: 399.99,
-                discount: 0,
-                category: "Tables",
-                image_url: "/api/placeholder/300/300",
-                rating: 4.6
-            },
-            {
-                id: 6,
-                name: "Comfortable Loveseat",
-                description: "Perfect 2-seater loveseat for small spaces",
-                price: 799.99,
-                discount: 12,
-                category: "Sofas",
-                image_url: "/api/placeholder/300/300",
-                rating: 4.4
-            }
-        ]
-    };
+    
 
 
     useEffect(() => {
         const load = async () => {
             const response = await callApi();
             if (response && response.data) {   
-                console.log(response.data); 
                 setProducts(response.data)
             }
         }
-
         load();
-    }, []);
+    }, [activeCategory]);
 
-    // function loadProducts (){
-    //     try {
-
-    //         setLoading(loading);
-    //         const response = callApi();
-            
-    //         // const selectedCategory = categories.find(cat => cat.id === activeCategory);
-            
-    //         // if (activeCategory === 'all') {
-    //         //     setProducts(mockProducts.all);
-    //         // } else {
-    //         //     const filteredProducts = mockProducts.all.filter(
-    //         //         product => product.category.toLowerCase() === activeCategory
-    //         //     );
-    //         //     setProducts(filteredProducts);
-    //         // }
-            
-    //     } catch (error) {
-    //         console.error('Error loading products:', error);
-    //         setProducts([]);
-    //     } 
-    // };
-
+    
     const containerVariants = {
         hidden: { opacity: 0 },
         visible: {
@@ -148,7 +65,9 @@ const ProductsSection = () => {
                     {categories.map((category) => (
                         <button
                             key={category.id}
-                            onClick={() => setActiveCategory(category.id)}
+                            onClick={() => {
+                                setActiveCategory(category.id);
+                            }}
                             className={`px-6 py-3 rounded-full font-medium transition-all duration-300 ${
                                 activeCategory === category.id
                                     ? 'bg-amber-500 text-white shadow-lg'
@@ -188,8 +107,8 @@ const ProductsSection = () => {
                         initial="hidden"
                         animate="visible"
                     >
-                        {products?.map((product) => (
-                            <ProductCard key={product.id} product={product} />
+                        {products?.map((product, index) => (
+                            <ProductCard key={index} product={product} />
                         ))}
                     </motion.div>
                 )}

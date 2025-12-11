@@ -11,27 +11,33 @@ const LoginAuth = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [role, setRole] = useState('user');
+    const [userData, setUserData] = useState(null);
     const { login } = useAuth();
 
     const { loading: LoginLoading, error: LoginError, success: LoginSuccess, callApi } = useApi('users/login', 'POST', { email, password, role });
     const navigate = useNavigate();
     const handleSubmit = (e) => {
         e.preventDefault();
-        callApi();
+        const response = callApi();
+        response.then((data) => {
+            setUserData(data);
+        }).catch((err) => {
+            console.error('Login failed:', err);
+        })
     }
 
     useEffect(() => {
         if (LoginSuccess) {
              toast.success('Login successful');
             navigate('/');
-            login();
+            login(userData);
         }
     }, [LoginSuccess, navigate]);
 
   return (
     <>
-        <div className="flex flex-col md:flex-row items-center justify-center overflow-hidden dark:text-white w-full h-screen 2xl:h-full">
-            <div className="w-full md:w-1/2 p-5">
+        <div className="flex flex-col md:flex-row items-center justify-center overflow-hidden w-full h-screen 2xl:h-full">
+            <div className="w-full p-5">
                 <div className="flex items-center justify-center w-full h-full">
                     <motion.form
                         initial={{ opacity: 0, x: -100 }}
@@ -40,7 +46,7 @@ const LoginAuth = () => {
                         className="flex flex-col items-center justify-center lg:gap-5 w-full h-full max-w-lg"
                         onSubmit={handleSubmit}
                     >
-                                <h1 className="text-4xl font-bold dark:text-white my-5">Login to <span className='text-amber-500'>Pando Furniture<span className='text-amber-800 animate-ping'>.</span></span></h1>
+                                <h1 className="text-4xl font-bold my-5">Login to <span className='text-amber-500'>Pando Furniture<span className='text-amber-800 animate-ping'>.</span></span></h1>
                                 <div className="max-w-sm">
                                 <input
                                     type="email"
@@ -56,14 +62,14 @@ const LoginAuth = () => {
                                     onChange={(e) => setPassword(e.target.value)}
                                     className="w-full px-4 py-2 mb-4 border-b outline-none"
                                 />
-                                <select 
+                                {/* <select 
                                     value={role} 
                                     onChange={(e) => setRole(e.target.value)}
                                     placeholder='Enter your role'
                                     className="w-full px-4 py-2 mb-4 border-b outline-none">
                                     <option value="user">User</option>
                                     <option value="admin">Admin</option>
-                                    </select>
+                                    </select> */}
                                 </div>
                                     {LoginError && <p className="text-red-500">{LoginError.message || 'Error logging in user'}</p>}
                                     <button
@@ -94,8 +100,8 @@ const LoginAuth = () => {
                     </motion.form>
                 </div>
             </div>
-            <div className="w-full md:w-1/2 hidden md:block"> 
-                <SimpleSlider/>
+            <div className=""> 
+               
             </div>
         </div>
       

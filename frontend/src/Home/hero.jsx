@@ -18,9 +18,9 @@ const Hero = () => {
    };
 
   return (
-    <div className={`bg-[url(/bg.png)] bg-no-repeat bg-cover xl:bg-bottom w-full h-screen 2xl:min-h-full text-white transition-colors duration-300 `}>
+    <div className={`bg-[url(/bg.png)] bg-no-repeat bg-cover xl:bg-bottom w-full h-screen md:max-h-[600px] xl:max-h-[800px] 2xl:max-h-[1200px] text-white transition-colors duration-300 `}>
 
-      <div className="bg-[#00000080]/90 backdrop-blur-md0 h-full">
+      <div className="bg-[#00000080]/90 h-full">
         <motion.div
          className="py-4 px-8 flex justify-between items-center w-full xl:max-w-7xl mx-auto">
         <h1 className="text-2xl font-bold">Pando</h1>
@@ -53,7 +53,7 @@ const Hero = () => {
                 className="flex items-center gap-2 hover:bg-white/10 p-2 rounded-lg transition-colors"
               >
                 <User className="w-5 h-5" />
-                <span className="hidden md:block">{user?.name || 'User'}</span>
+                <span className="hidden md:block">{user?.username || 'User'}</span>
               </button>
               
               {showUserMenu && (
@@ -97,14 +97,14 @@ const Hero = () => {
       initial={{opacity: 0, scale: 0.75, duration: 3}} 
       animate={{ opacity: 1, scale: 1}} 
       exit={{opacity: 0, scale: 0.75}}
-      className="h-full w-full text-center flex flex-col items-center justify-center gap-5">
-          <h1 className='text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold max-w-3xl shadow-lg'>Affordable Furniture For All.</h1>
-          <p className='text-lg font-light'>Welcome to Pando Furniture, The Home of Minimalist and Modern House Furniture.</p>
-          <div className="relative w-full max-w-2xs md:max-w-xs">
+      className="h-full w-full text-center flex flex-col items-center justify-center gap-5 2xl:gap-7">
+          <h1 className='text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-9xl font-bold xl:max-w-3xl 2xl:max-w-6xl shadow-lg'>Affordable Furniture For All.</h1>
+          <p className='text-lg 2xl:text-xl font-light'>Welcome to Pando Furniture, The Home of Minimalist and Modern House Furniture.</p>
+          <div className="relative w-full max-w-2xs md:max-w-sm lg:max-w-md 2xl:max-w-2xl">
           <input 
             type="text" 
             placeholder='Search Furniture' 
-            className='bg-white/10 border w-full outline-0 p-2 px-3 rounded-2xl backdrop-blur-sm' 
+            className='bg-white/10 border w-full placeholder:2xl:text-xl outline-0 p-2 px-3 2xl:p-3 2xl:px-5 rounded-2xl backdrop-blur-sm' 
           />
           <div className="bg-[#E58411] p-[5px] rounded-full absolute top-2 right-2">
           <Search className="w-4 h-4"/>

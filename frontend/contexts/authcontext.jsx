@@ -24,7 +24,7 @@ export const AuthProvider = ({ children }) => {
         // Set cookies
         setCookie('isLogged', 'true', 7);
         setCookie('user', JSON.stringify(userData), 7);
-        setCookie('userId', userData.id, 7);
+        setCookie('userId', userData.data._id, 7);
     };
 
     const logout = () => {

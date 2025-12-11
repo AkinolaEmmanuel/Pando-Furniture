@@ -1,13 +1,28 @@
 import User from '../model/user.js';
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
 
+
+const createToken = (user) => {
+    return jwt.sign({ id: user._id, email: user.email, role: user.role },
+         process.env.JWT_SECRET, 
+         { expiresIn: '1d' });
+}
 // Register a User
 
 export const registerUser = async (req, res) => {
     try {
         const { username, email, password, role } = req.body;
-        const user = new User({ username, email, password, role });
+
+        const hashPassword = bcrypt.hashSync(password, 10);
+        const user = new User({ username, email, hashPassword, role });
         await user.save();
-        res.status(201).json({ message: 'User registered successfully', status: 201, data: user });
+
+        const token = createToken(user);
+        const safeUser = user.toObject();
+        delete safeUser.hashPassword;
+
+        res.status(201).json({ message: 'User registered successfully', status: 201, data: safeUser, token });
     } catch (error) {
         res.status(500).json({ message: 'Error registering user', error });
     }
@@ -20,12 +35,16 @@ export const loginUser = async (req, res) => {
         const { email, password } = req.body;
         const user = await User.findOne({ email });
         if (!user) {
-            return res.status(401).json({ message: 'Invalid credentials' });
+            return res.status(401).json({ message: 'Account does not exist' });
         }
         if (user.password !== password) {
             return res.status(401).json({ message: 'Invalid credentials' });
         }
-        res.status(200).json({ message: 'Login successful', status: 200, data: user });
+
+        const token = createToken(user);
+         const safeUser = user.toObject();
+        delete safeUser.hashPassword;
+        res.status(200).json({ message: 'Login successful', status: 200, data: safeUser, token });
     } catch (error) {
         res.status(500).json({ message: 'Error logging in user', error });
     }
@@ -38,7 +57,7 @@ export const loginAdmin = async (req, res) => {
         const { email, password, role } = req.body;
         const user = await User.findOne({ email, role: 'admin' });
         if (!user) {
-            return res.status(401).json({ message: 'Invalid credentials' });
+            return res.status(401).json({ message: 'Account does not exist' });
         }
         if (user.password !== password) {
             return res.status(401).json({ message: 'Invalid credentials' });
@@ -46,7 +65,11 @@ export const loginAdmin = async (req, res) => {
         if (user.role !== 'admin') {
             return res.status(401).json({ message: 'You are not an admin' });
         }
-        res.status(200).json({ message: 'Login successful', status: 200, data: user });
+
+        const token = createToken(user);
+        const safeUser = user.toObject();
+        delete safeUser.hashPassword;
+        res.status(200).json({ message: 'Login successful', status: 200, data: safeUser, token });
     } catch (error) {
         res.status(500).json({ message: 'Error logging in user', error });
     }
