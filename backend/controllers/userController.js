@@ -14,13 +14,13 @@ export const registerUser = async (req, res) => {
     try {
         const { username, email, password, role } = req.body;
 
-        const hashPassword = bcrypt.hashSync(password, 10);
-        const user = new User({ username, email, hashPassword, role });
+        // const hashPassword = bcrypt.hashSync(password, 10);
+        const user = new User({ username, email, password, role });
         await user.save();
 
         const token = createToken(user);
         const safeUser = user.toObject();
-        delete safeUser.hashPassword;
+        delete safeUser.password;
 
         res.status(201).json({ message: 'User registered successfully', status: 201, data: safeUser, token });
     } catch (error) {

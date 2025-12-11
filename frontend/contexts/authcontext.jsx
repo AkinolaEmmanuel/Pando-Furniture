@@ -1,10 +1,12 @@
 import { createContext, useContext, useState, useEffect } from "react";
+import { Navigate } from "react-router-dom";
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
     const [isLogged, setIsLogged] = useState(false);
     const [user, setUser] = useState(null);
+    
 
     // Check for existing session on mount
     useEffect(() => {
@@ -23,19 +25,22 @@ export const AuthProvider = ({ children }) => {
         
         // Set cookies
         setCookie('isLogged', 'true', 7);
-        setCookie('user', JSON.stringify(userData), 7);
-        setCookie('userId', userData.data._id, 7);
+        setCookie('user', userData.token, 7);
+        setCookie('userId', userData._id, 7);
     };
 
     const logout = () => {
         setIsLogged(false);
         setUser(null);
+        Navigate('/');
         
         // Clear cookies
         deleteCookie('isLogged');
         deleteCookie('user');
         deleteCookie('userId');
     };
+
+    
 
     // Helper functions for cookie management
     const setCookie = (name, value, days) => {

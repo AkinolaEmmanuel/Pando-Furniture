@@ -29,8 +29,8 @@ const RegisterAuth = () => {
 
   return (
     <>
-        <div className="flex flex-col md:flex-row items-center justify-center overflow-hidden dark:text-white w-full h-screen 2xl:h-full">
-            <div className="w-full md:w-1/2 p-5">
+        <div className="flex flex-col md:flex-row items-center justify-center overflow-hidden w-full h-screen 2xl:h-full">
+            <div className="p-5">
                 <div className="flex items-center justify-center w-full h-full">
                     <motion.form
                         initial={{ opacity: 0, x: -100 }}
@@ -97,9 +97,9 @@ const RegisterAuth = () => {
                     </motion.form>
                 </div>
             </div>
-            <div className="w-full md:w-1/2 hidden md:block"> 
+            {/* <div className="w-full md:w-1/2 hidden md:block"> 
                 <SimpleSlider/>
-            </div>
+            </div> */}
         </div>
       
     </>
