@@ -5,60 +5,79 @@ import toast from 'react-hot-toast';
 export const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
-    const [cartItems, setCartItems] = useState([]);
+    const [cartItems, setCartItems] = useState(() => {
+        try { return JSON.parse(localStorage.getItem('cartItems')) || []; } catch (error) { return []; }}); 
     const [cartCount, setCartCount] = useState(0);
     const [purchases, setPurchases] = useState([]);
     
+
+    useEffect(() => {
+        localStorage.setItem('cartItems', JSON.stringify(cartItems));
+        setCartCount(cartItems.reduce((s, i) => s + (i?.quantity || 0), 0));
+    }, [cartItems]);
     // const { callApi: createPurchaseApi } = useApi('purchases', 'POST');
     // const { callApi: getPurchasesApi } = useApi('purchases', 'GET');
     // const { callApi: updatePurchaseApi } = useApi('purchases', 'PUT');
     // const { callApi: deletePurchaseApi } = useApi('purchases', 'DELETE');
 
     // Load user's purchases on mount
-    useEffect(() => {
-        loadUserPurchases();
-    }, []);
+    // useEffect(() => {
+    //     loadUserPurchases();
+    // }, []);
 
-    const loadUserPurchases = async () => {
-        const userId = getCookie('userId');
-        if (userId) {
-            try {
-                const { callApi } = useApi(`purchases/user/${userId}`, 'GET');
-                const response = await callApi();
-                if (response?.data) {
-                    setPurchases(response.data);
-                    setCartCount(response.data.length);
-                }
-            } catch (error) {
-                console.error('Error loading purchases:', error);
-            }
-        }
-    };
+    // const loadUserPurchases = async () => {
+    //     const userId = getCookie('userId');
+    //     if (userId) {
+    //         try {
+    //             const { callApi } = useApi(`purchases/user/${userId}`, 'GET');
+    //             const response = await callApi();
+    //             if (response?.data) {
+    //                 setPurchases(response.data);
+    //                 setCartCount(response.data.length);
+    //             }
+    //         } catch (error) {
+    //             console.error('Error loading purchases:', error);
+    //         }
+    //     }
+    // };
 
     const addToCart = async (product) => {
-        const userId = getCookie('userId');
-        if (!userId) {
+        const token = getCookie('token');
+        if (!token) {
             toast.error('Please login to add items to cart');
             return;
         }
 
         try {
-            const purchaseData = {
-                user_id: userId,
-                product_id: product.id,
-                quantity: 1,
-                status: 'pending',
-                total_price: product.price
-            };
 
-            const { callApi } = useApi('purchases', 'POST', purchaseData);
-            const response = await callApi();
+            setCartItems(prev => {
+                const found = prev.find((item) => item?.id === product.id);
+                if (found) {
+                    return prev.map((item) =>
+                        item?.id === product.id ? { ...item, quantity: (item.quantity || 0) + 1 } : item
+                    );
+                }
+                return [...prev, { ...product, quantity: 1 }];
+            });
+            toast.success('Item added to cart');
+
+
+            // const purchaseData = {
+            //     user_id: userId,
+            //     product_id: product.id,
+            //     quantity: 1,
+            //     status: 'pending',
+            //     total_price: product.price
+            // };
+
+            // const { callApi } = useApi('purchases', 'POST', purchaseData);
+            // const response = await callApi();
             
-            if (response?.data) {
-                setPurchases(prev => [...prev, response.data]);
-                setCartCount(prev => prev + 1);
-                toast.success('Item added to cart!');
-            }
+            // if (response?.data) {
+            //     setPurchases(prev => [...prev, response.data]);
+            //     setCartCount(prev => prev + 1);
+            //     toast.success('Item added to cart!');
+            // }
         } catch (error) {
             toast.error('Failed to add item to cart');
             console.error('Error adding to cart:', error);
@@ -67,11 +86,13 @@ export const CartProvider = ({ children }) => {
 
     const removeFromCart = async (purchaseId) => {
         try {
-            const { callApi } = useApi(`purchases/${purchaseId}`, 'DELETE');
-            await callApi();
+
             
-            setPurchases(prev => prev.filter(purchase => purchase.id !== purchaseId));
-            setCartCount(prev => prev - 1);
+            // const { callApi } = useApi(`purchases/${purchaseId}`, 'DELETE');
+            // await callApi();
+            
+            // setPurchases(prev => prev.filter(purchase => purchase.id !== purchaseId));
+            setCartItems(prev => prev.filter(item => item.id !== purchaseId));
             toast.success('Item removed from cart');
         } catch (error) {
             toast.error('Failed to remove item from cart');
@@ -130,7 +151,7 @@ export const CartProvider = ({ children }) => {
         removeFromCart,
         updateCartItem,
         clearCart,
-        loadUserPurchases
+        //loadUserPurchases
     };
 
     return (

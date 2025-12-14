@@ -35,10 +35,10 @@ function App() {
                             <Toaster
                                 position="top-right"
                                 toastOptions={{
-                                    duration: 4000,
+                                    duration: 5000,
                                     style: {
-                                        background: 'var(--toast-bg)',
-                                        color: 'var(--toast-color)',
+                                        background: "white",
+                                        color: 'black',
                                     },
                                 }}
                             />

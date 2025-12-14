@@ -46,19 +46,19 @@ const ProductsSection = () => {
     };
 
     return (
-        <section className="py-20 px-10 transition-colors duration-300">
+        <section className="p-20 transition-colors duration-300">
             <div className="max-w-7xl mx-auto">
-                {/* Section Header 
+                {/* Section Header */}
                 <div className="text-center mb-12">
-                    <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+                    <h2 className="text-4xl font-bold text-gray-900 mb-4">
                         Our Furniture Collection
                     </h2>
-                    <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+                    <p className="text-lg text-gray-600  max-w-2xl mx-auto">
                         Discover our carefully curated selection of modern, minimalist furniture 
                         designed to transform your living space.
                     </p>
                 </div>
-                */}
+                
 
                 {/* Category Filters */}
                 <div className="flex flex-wrap justify-center gap-4 mb-12">
@@ -121,14 +121,14 @@ const ProductsSection = () => {
                     </div>
                 )}
 
-                {/* View All Button */}
+                {/* View All Button
                 {!loading && products.length > 0 && (
                     <div className="text-center mt-12">
                         <button className="bg-amber-500 hover:bg-amber-600 text-white px-8 py-3 rounded-lg font-medium transition-colors">
                             View All Products
                         </button>
                     </div>
-                )}
+                )} */}
             </div>
         </section>
     );

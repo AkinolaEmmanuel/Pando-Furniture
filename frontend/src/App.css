@@ -5,12 +5,13 @@
   font-style: normal;
 }
 
-
-
-/* :root {
+:root {
   --toast-bg: #ffffff;
   --toast-color: #000000;
 }
+
+
+/* 
 
 .dark {
   --toast-bg: #374151;

@@ -14,8 +14,8 @@ export const registerUser = async (req, res) => {
     try {
         const { username, email, password, role } = req.body;
 
-        // const hashPassword = bcrypt.hashSync(password, 10);
-        const user = new User({ username, email, password, role });
+        const hashPassword = bcrypt.hashSync(password, 10);
+        const user = new User({ username, email, password: hashPassword, role });
         await user.save();
 
         const token = createToken(user);
@@ -24,6 +24,7 @@ export const registerUser = async (req, res) => {
 
         res.status(201).json({ message: 'User registered successfully', status: 201, data: safeUser, token });
     } catch (error) {
+        console.error(error.stack);
         res.status(500).json({ message: 'Error registering user', error });
     }
 }
@@ -33,19 +34,25 @@ export const registerUser = async (req, res) => {
 export const loginUser = async (req, res) => {
     try {
         const { email, password } = req.body;
+        if (!email || !password) return res.status(400).json({ message: 'Missing credentials' });
         const user = await User.findOne({ email });
         if (!user) {
             return res.status(401).json({ message: 'Account does not exist' });
         }
-        if (user.password !== password) {
-            return res.status(401).json({ message: 'Invalid credentials' });
+        // if (user.password !== password) {
+        //     return res.status(401).json({ message: 'Invalid credentials' });
+        // }
+        const isPasswordValid = bcrypt.compare(password, user.password);
+        if (!isPasswordValid) {
+            return res.status(401).json({ message: 'Invalid credentials'});
         }
 
         const token = createToken(user);
          const safeUser = user.toObject();
-        delete safeUser.hashPassword;
+        delete safeUser.password;
         res.status(200).json({ message: 'Login successful', status: 200, data: safeUser, token });
     } catch (error) {
+        console.error(error.stack);
         res.status(500).json({ message: 'Error logging in user', error });
     }
 }
@@ -90,7 +97,7 @@ export const getAllUsers = async (req, res) => {
 export const getUserById =  async (req, res) => {
     try {
         const { id } = req.params;
-        const users = await User.findById({id});
+        const users = await User.findById(id);
         res.status(200).json({message: 'Users retrieved successfully', data: users});
     } catch (error) {
         res.status(500).json({ message: 'Error getting users', error });

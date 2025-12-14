@@ -3,6 +3,7 @@ import { useCart } from '../contexts/cartcontext';
 import { useAuth } from '../contexts/authcontext';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
+import toast from 'react-hot-toast';
 
 const ProductCard = ({ product }) => {
     const { addToCart } = useCart();

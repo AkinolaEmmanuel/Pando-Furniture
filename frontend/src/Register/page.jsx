@@ -23,7 +23,7 @@ const RegisterAuth = () => {
     useEffect(() => {
         if (RegisterSuccess) {
             toast.success('Registration successful');
-            navigate('/');
+            navigate('/login');
         }
     }, [RegisterSuccess, navigate]);
 

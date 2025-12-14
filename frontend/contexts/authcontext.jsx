@@ -1,12 +1,12 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { Navigate } from "react-router-dom";
+import { useNavigate,  } from "react-router-dom";
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
     const [isLogged, setIsLogged] = useState(false);
     const [user, setUser] = useState(null);
-    
+    const navigate = useNavigate();
 
     // Check for existing session on mount
     useEffect(() => {
@@ -24,26 +24,28 @@ export const AuthProvider = ({ children }) => {
         setUser(userData);
         
         // Set cookies
-        setCookie('isLogged', 'true', 7);
-        setCookie('user', userData.token, 7);
-        setCookie('userId', userData._id, 7);
+        setCookie('isLogged', 'true');
+        setCookie('user', JSON.stringify(userData.data));
+        setCookie('token', userData.token);
+        setCookie('userId', userData.data._id);
     };
 
     const logout = () => {
         setIsLogged(false);
         setUser(null);
-        Navigate('/');
+        navigate('/', { replace: true });
         
         // Clear cookies
         deleteCookie('isLogged');
         deleteCookie('user');
+        deleteCookie('token');
         deleteCookie('userId');
     };
 
     
 
     // Helper functions for cookie management
-    const setCookie = (name, value, days) => {
+    const setCookie = (name, value, days = 1) => {
         const expires = new Date();
         expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
         document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`;
@@ -57,7 +59,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     const deleteCookie = (name) => {
-        document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+        document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; samesite=lax`;
     };
 
     const value = { isLogged, user, login, logout };

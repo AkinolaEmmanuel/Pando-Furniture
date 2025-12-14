@@ -11,12 +11,11 @@ function Home() {
     <div className='poppins transition-colors duration-300'>
       <Hero/>
       <About/> 
-      <Product/>
-       {/*
+      <Product/> 
       <Experiences/>
       <Materials/>
       <Testimonials/>
-      <Footer/> */}
+      <Footer/>
     </div>
   )
 }

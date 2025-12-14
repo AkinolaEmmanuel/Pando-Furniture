@@ -8,7 +8,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
 const CartPage = () => {
-    const { purchases, removeFromCart, updateCartItem, cartCount, loadUserPurchases } = useCart();
+    const { purchases, removeFromCart, updateCartItem, cartCount } = useCart();
     const { isLogged, user } = useAuth();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
@@ -25,9 +25,12 @@ const CartPage = () => {
     const loadCartData = async () => {
         setLoading(true);
         try {
-            await loadUserPurchases();
-            // Load product details for each purchase
-            await loadProductDetails();
+            // Load cart data
+
+            const getProducts = localStorage.getItem('cartItems');
+
+            setProducts(JSON.parse(getProducts));
+           
         } catch (error) {
             console.error('Error loading cart data:', error);
             toast.error('Failed to load cart data');
@@ -36,27 +39,7 @@ const CartPage = () => {
         }
     };
 
-    const loadProductDetails = async () => {
-        const productPromises = purchases.map(async (purchase) => {
-            try {
-                const { callApi } = useApi(`products/${purchase.product_id}`, 'GET');
-                const response = await callApi();
-                return { id: purchase.product_id, data: response?.data };
-            } catch (error) {
-                console.error(`Error loading product ${purchase.product_id}:`, error);
-                return { id: purchase.product_id, data: null };
-            }
-        });
-
-        const productResults = await Promise.all(productPromises);
-        const productsMap = {};
-        productResults.forEach(result => {
-            if (result.data) {
-                productsMap[result.id] = result.data;
-            }
-        });
-        setProducts(productsMap);
-    };
+   
 
     const updateQuantity = async (purchaseId, newQuantity) => {
         if (newQuantity < 1) return;
