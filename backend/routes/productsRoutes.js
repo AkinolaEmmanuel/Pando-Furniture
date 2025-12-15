@@ -6,10 +6,11 @@ const router = express.Router();
 
 
 router.get('/', getAllProducts);
-router.get('/:id', getProductById);
+// Specific routes should be defined before the catch-all `/:id` route
+router.get('/search', searchProduct);
 router.get('/category/:category', getProductByCategory);
 router.get('/discount/:discount', getProductByDiscount);
-router.get('/search/:query', searchProduct);
+router.get('/:id', getProductById);
 router.post('/', createProduct);
 router.post('/multiple', createMultipleProducts);
 router.put('/:id', updateProductById);

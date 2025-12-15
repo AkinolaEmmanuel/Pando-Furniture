@@ -39,6 +39,25 @@ export const getAllProducts = async (req, res) => {
     }
 }
 
+
+// Search for a Product
+
+export const searchProduct = async (req, res) => {
+    try {
+        const q = (req.query.q || '').trim();
+        if (!q) {
+            return res.status(200).json({ message: 'Products retrieved successfully', data: [] });
+        }
+
+        // Use case-insensitive partial match on name or description
+        const regex = new RegExp(q, 'i');
+        const products = await Product.find({ $or: [{ name: regex }, { description: regex }] }).limit(50);
+        res.status(200).json({ message: 'Products retrieved successfully', data: products });
+    } catch (error) {
+        res.status(500).json({ message: 'Error getting products', error });
+    }
+}
+
 // Get a Product by ID
 
 export const getProductById = async (req, res) => {
@@ -96,17 +115,5 @@ export const deleteProductById = async (req, res) => {
         res.status(200).json({ message: 'Product deleted successfully', data: product });
     } catch (error) {
         res.status(500).json({ message: 'Error deleting product', error });
-    }
-}
-
-// Search for a Product
-
-export const searchProduct = async (req, res) => {
-    try {
-        const { query } = req.params;
-        const products = await Product.find({ $text: { $search: query } });
-        res.status(200).json({ message: 'Products retrieved successfully', data: products });
-    } catch (error) {
-        res.status(500).json({ message: 'Error getting products', error });
     }
 }

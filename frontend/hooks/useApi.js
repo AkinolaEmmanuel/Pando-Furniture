@@ -3,7 +3,7 @@ import { useState } from 'react';
 import toast from 'react-hot-toast';
 
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 export const useApi = (endpoint, method, body, options) => {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(false);

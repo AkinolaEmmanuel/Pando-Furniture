@@ -4,18 +4,52 @@ import { useTheme } from '../../contexts/themecontext'
 import { useCart } from '../../contexts/cartcontext'
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion'
-import { useState } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
+import { API_BASE_URL, useApi } from '../../hooks/useApi';
+import debounce from 'lodash/debounce';
 
 const Hero = () => {
    const { isLogged, user, logout } = useAuth();
+   const {loading, error, callApi} = useApi()
    const { theme, toggleTheme } = useTheme();
    const { cartCount } = useCart();
    const [showUserMenu, setShowUserMenu] = useState(false);
+   const [searchItem, setSearchItem] = useState("");
+   const [debouncedSearch, setDebouncedSearch] = useState("");
+   const isSearchingRef = useRef(null);
 
    const handleLogout = () => {
      logout();
      setShowUserMenu(false);
    };
+
+   const debounceSet = useMemo(() => debounce((val) => setDebouncedSearch(val), 500), []);
+   useEffect(() => debounceSet.cancel(), [debounceSet])
+
+   const handleSearch = (e) => {
+    setSearchItem(e.target.value);
+    debounceSet(e.target.value);
+   }
+ const handleSearchSubmit = async (query) => {
+   if (!query.trim()) return;
+   if (isSearchingRef.current) isSearchingRef.current.abort();
+   const controller = new AbortController();
+   isSearchingRef.current = controller;
+  try {
+   const res = await fetch(`${API_BASE_URL}/products/search?q=${encodeURIComponent(query)}`, { signal: controller.signal });
+   const data = await res.json();
+   console.log(data);
+   } catch (err) {
+     if (err.name !== 'AbortError') {
+     console.error(err);
+   }
+   } finally {
+     isSearchingRef.current = null;
+   }
+ }
+
+ const onSearchClick = () => handleSearchSubmit(searchItem);
+ const onSearchKeyPress = (e) => e.key === 'Enter' && onSearchClick();
 
   return (
     <div className={`bg-[url(/bg.png)] bg-no-repeat bg-cover xl:bg-bottom w-full h-screen md:max-h-[600px] xl:max-h-[800px] 2xl:max-h-[1200px] text-white transition-colors duration-300 `}>
@@ -103,11 +137,14 @@ const Hero = () => {
           <div className="relative w-full max-w-2xs md:max-w-sm lg:max-w-md 2xl:max-w-2xl">
           <input 
             type="text" 
+            value={searchItem}
+            onChange={handleSearch}
+            onKeyDown={onSearchKeyPress}
             placeholder='Search Furniture' 
             className='bg-white/10 border w-full placeholder:2xl:text-xl outline-0 p-2 px-3 2xl:p-3 2xl:px-5 rounded-2xl backdrop-blur-sm' 
           />
           <div className="bg-[#E58411] p-[5px] rounded-full absolute top-2 right-2">
-          <Search className="w-4 h-4"/>
+          <Search className="w-4 h-4" onClick={onSearchClick}/>
           </div>
           </div>
       </motion.div>
